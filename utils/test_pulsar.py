@@ -22,7 +22,7 @@ def test_shared_subscription(client):
 
     client.for_n_messages(consumer, 10, lambda msg: consumer.acknowledge(msg))
 
-    assert client.number_of_messages_for_consumer(consumer) == 0
+    assert client.number_of_messages_for_consumer(consumer)[0] == 0
 
 
 def test_shared_subscription_when_not_acked_re_consumes_messages(client):
@@ -35,4 +35,46 @@ def test_shared_subscription_when_not_acked_re_consumes_messages(client):
     consumer.close()
 
     second_consumer = client.generate_consumer(topic=topic, subscription=subscription)
-    assert 10 == client.number_of_messages_for_consumer(second_consumer)
+    assert 10 == client.number_of_messages_for_consumer(second_consumer)[0]
+
+
+def test_only_non_acked_messages_are_re_consumed(client):
+    topic = client.random_name()
+    subscription = client.random_name()
+    consumer = client.generate_consumer(topic=topic, subscription=subscription)
+
+    def ack_if_below_6(msg):
+        msg_number = int(msg.data().decode())
+        if msg_number < 6:
+            consumer.acknowledge(msg)
+
+    client.generate_n_messages(10, topic)
+
+    client.for_n_messages(consumer, 10, ack_if_below_6)
+
+    consumer.close()
+
+    second_consumer = client.generate_consumer(topic=topic, subscription=subscription)
+    assert 5 == client.number_of_messages_for_consumer(second_consumer)[0]
+
+
+def test_negative_acked_messages_are_re_consumed(client):
+    topic = client.random_name()
+    subscription = client.random_name()
+    consumer = client.generate_consumer(topic=topic, subscription=subscription)
+
+    def ack_if_below_6(msg):
+        msg_number = int(msg.data().decode())
+        if msg_number < 6:
+            consumer.negative_acknowledge(msg)
+        else:
+            consumer.acknowledge(msg)
+
+    client.generate_n_messages(10, topic)
+
+    client.for_n_messages(consumer, 10, ack_if_below_6)
+
+    consumer.close()
+
+    second_consumer = client.generate_consumer(topic=topic, subscription=subscription)
+    assert 5 == client.number_of_messages_for_consumer(second_consumer)[0]

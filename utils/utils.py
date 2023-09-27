@@ -15,7 +15,7 @@ class TestClient:
         logging.info(f"Generating [ {n} ] messages to topic [ {topic} ]")
         producer = self.client.create_producer(topic)
         for i in range(n):
-            producer.send(('Hello-%d' % i).encode('utf-8'))
+            producer.send(str(i + 1).encode('utf-8'))
         logging.info(f"Generated {n} messages")
 
     @staticmethod
@@ -35,7 +35,7 @@ class TestClient:
                                      initial_position=InitialPosition.Earliest)
 
     @staticmethod
-    def number_of_messages_for_consumer(consumer: pulsar.Consumer) -> int:
+    def number_of_messages_for_consumer(consumer: pulsar.Consumer) -> tuple:
         num_received = 0
         already_received_messages = list()
         start_time = time.time()
@@ -50,7 +50,7 @@ class TestClient:
                     already_received_messages.append(msg.message_id())
             except Exception:
                 break
-        return num_received
+        return num_received, already_received_messages
 
     def consume_n_messages_and_do_not_ack(self, consumer: pulsar.Consumer, n: int):
         self.for_n_messages(consumer, n)
