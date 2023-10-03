@@ -6,7 +6,7 @@ import pulsar
 from _pulsar import ConsumerType, InitialPosition
 
 
-class TestClient:
+class PulsarTestClient:
 
     def __init__(self, client: pulsar.Client):
         self.client = client

@@ -1,10 +1,9 @@
 import logging
-from time import sleep
 
 import pulsar
 import pytest
 
-from utils import TestClient
+from utils import PulsarTestClient
 
 logging.root.setLevel(logging.INFO)
 
@@ -13,7 +12,7 @@ logging.root.setLevel(logging.INFO)
 def client(request):
     client = pulsar.Client('pulsar://localhost:6650')
     request.addfinalizer(lambda: client.close())
-    return TestClient(client)
+    return PulsarTestClient(client)
 
 
 def test_shared_subscription(client):
