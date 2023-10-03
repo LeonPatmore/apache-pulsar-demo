@@ -29,6 +29,10 @@ class TestClient:
         subscription = self.random_name() if not subscription else subscription
         logging.info(f"Using topic [ {topic} ] and subscription [ {subscription} ]")
         return self.client.subscribe(topic=topic,
+                                     negative_ack_redelivery_delay_ms=1000,
+                                     dead_letter_policy=pulsar.ConsumerDeadLetterPolicy(
+                                         max_redeliver_count=1
+                                     ),
                                      subscription_name=subscription,
                                      consumer_type=ConsumerType.Shared,
                                      unacked_messages_timeout_ms=10000,
