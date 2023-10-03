@@ -30,8 +30,7 @@ Batches are tracked and stored as a single unit rather than individual messages.
 
 ## Consuming / Acknowledging
 
-In general batches are acknowledged when all of its messages have been processed. This means that one message failing will cause the retry of all messages in the batch, regardless of
-wether they were successful.
+In general batches are acknowledged when all of its messages have been processed. This means that one message failing will cause the retry of all messages in the batch, regardless of wether they were successful.
 
 ### Batch Index Acknowledgement
 
@@ -49,4 +48,55 @@ A named configuration that controls how messages are delivered to consumers. The
 
 ## Partitioning
 
-Normal topics are served by a single broker.
+Normal topics are served by a single broker, which limits throughput. A partitioned topic is handled by multiple brokers, meaning higher throughput.
+Implemented as multiple normal topics.
+
+### Routing Modes
+
+Routing modes determine which partition a message is published to.
+
+- `RoundRobin`
+- `Single`
+  - Messages with no keys are all published to the same partition for a given consumer.
+  - If the message has a key, the key is hashed and assigned to a partition (there are multiple hashing schemes available).
+- `Custom`
+
+### Ordering
+
+The ordering depends on the routing mode:
+
+- Per Key ordering: Single with keys, round robin.
+- Per producer: Single with no keys
+
+## System Topics
+
+System topics are topics for internal Pulsar use. They can not be created. See the list: https://pulsar.apache.org/docs/3.1.x/concepts-messaging/#system-topic.
+
+## Re-consuming
+
+### Negative Acknowledgement
+
+Sent by the consumer to force a message to be retried.
+
+- In `exclusive` and `failover` subscription types, you can only acknowledge the last message you receive.
+- In `shared` and `key shared` subscription types, you can acknowledge individually.
+
+You can specify custom backoff configuration.
+
+Negative acknowledged messages are cached client side, and do not go to BookKeeper.
+
+### Acknowledgement Timeout
+
+The amount of time to wait before retrying messages that are not acknowledged.
+
+You can specify custom backoff configuration.
+
+### Retry Letter Topic
+
+The retry letter topic is a way to retry messages and have them persisted in BookKeeper. This is more suitable for message which require a large amount of retries with longer delays.
+
+### DLQ
+
+Messages that have failed to be consumed a certain amount of times can move to the DLQ.
+
+TODO: DLQ works for negative ack, ack timeout and retry letter?
