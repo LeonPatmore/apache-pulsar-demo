@@ -15,7 +15,7 @@ class PulsarTestClient:
         logging.info(f"Generating [ {n} ] messages to topic [ {topic} ]")
         producer = self.client.create_producer(topic)
         for i in range(n):
-            producer.send(str(i + 1).encode('utf-8'))
+            producer.send(str(i + 1).encode('utf-8'), )
         logging.info(f"Generated {n} messages")
 
     @staticmethod

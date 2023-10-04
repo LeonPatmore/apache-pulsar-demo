@@ -99,4 +99,26 @@ The retry letter topic is a way to retry messages and have them persisted in Boo
 
 Messages that have failed to be consumed a certain amount of times can move to the DLQ.
 
-TODO: DLQ works for negative ack, ack timeout and retry letter?
+Works for unacknowledged and negative acknowledged messages.
+
+## Message Deduplication
+
+An optional feature that prevents the broker from persisting the same message if it has already been persisted.
+
+## Delayed Message Delivery
+
+When you produce a message to Pulsar, you can specify a delay. The message is stored in BookKeeper.
+
+## Message Retention
+
+A Pulsar instance is a collection of Pulsar clusters.
+
+![Pulsar](pulsar.png)
+
+### Pulsar Cluster
+
+A single Pulsar cluster is composed of:
+
+- `A BookKeeper cluster`: Collection of Bookie services that handle persistent storage of messages.
+- `A ZooKeeper cluster`: Handles coordination between Pulsar clusters and cluster level config.
+- One or more Pulsar brokers

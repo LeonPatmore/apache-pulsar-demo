@@ -108,3 +108,18 @@ def test_dlq_with_ack_timeout(client):
 
     dlq_consumer = client.generate_consumer(topic=consumer.topic() + "-" + consumer.subscription_name() + "-DLQ")
     assert 1 == client.number_of_messages_for_consumer(dlq_consumer)[0]
+
+
+def test_negative_ack_and_no_ack_share_same_retry_count(client):
+    consumer = client.generate_consumer()
+
+    client.generate_n_messages(1, consumer.topic())
+
+    client.for_n_messages(consumer, 1, lambda msg: consumer.negative_acknowledge(msg))
+
+    client.for_n_messages(consumer, 1)
+
+    assert 0 == client.number_of_messages_for_consumer(consumer)[0]
+
+    dlq_consumer = client.generate_consumer(topic=consumer.topic() + "-" + consumer.subscription_name() + "-DLQ")
+    assert 1 == client.number_of_messages_for_consumer(dlq_consumer)[0]
