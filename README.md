@@ -122,3 +122,35 @@ A single Pulsar cluster is composed of:
 - `A BookKeeper cluster`: Collection of Bookie services that handle persistent storage of messages.
 - `A ZooKeeper cluster`: Handles coordination between Pulsar clusters and cluster level config.
 - One or more Pulsar brokers
+
+## Geo Replication
+
+Pulsar supports geo replication by replicating the messages in storage.
+
+### Async
+
+The messages are first persisted to the local cluster and then replicated to remote clusters by the brokers.
+
+### Sync
+
+Data is synced between multiple clusters and the client waits for an acknowledgement.
+
+A synchronous replicated cluster consists of:
+
+- A cluster of Bookies.
+- A cluster of brokers.
+- A global Zookeeper installation.
+
+### Replication Strategies
+
+#### Full Mesh
+
+Messages are replicated everywhere. You can setup _selective message replication_ to customize replication strategy.
+
+#### Active-Active
+
+A full mesh replication with only two data centers.
+
+#### Aggregation Replication
+
+Front facing data centers replicate to a central aggregated cluster.
