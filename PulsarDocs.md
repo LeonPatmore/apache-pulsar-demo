@@ -123,6 +123,12 @@ A single Pulsar cluster is composed of:
 - `A ZooKeeper cluster`: Handles coordination between Pulsar clusters and cluster level config.
 - One or more Pulsar brokers
 
+### Persistent vs Non Persistent Topics
+
+- Persistent topics: Persist the messages, ensuring at-least-once delivery.
+
+- Non-persistent topics: Never persisted to disk, messages can be lost.
+
 ## Geo Replication
 
 Pulsar supports geo replication by replicating the messages in storage.
@@ -154,3 +160,11 @@ A full mesh replication with only two data centers.
 #### Aggregation Replication
 
 Front facing data centers replicate to a central aggregated cluster.
+
+## Topic Compaction
+
+Topic compaction is the process of removing older messages which share the same key as newer messages.
+
+Only applies to persistent topics.
+
+Triggered automatically when the backlog reaches a certain size, or can be triggered manually.
