@@ -1,0 +1,27 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: test-function
+  namespace: pulsar
+spec:
+  template:
+    spec:
+      containers:
+        - name: test
+          imagePullPolicy: IfNotPresent
+          image: python-runner:latest
+#          command: ["/bin/sh"]
+#          args: ["-c", "sleep 9999999"]
+          env:
+            - name: PYTHONPATH
+              value: "/app"
+          volumeMounts:
+            - name: my-test-file
+              mountPath: "/app/entry"
+              readOnly: true
+      volumes:
+        - name: my-test-file
+          configMap:
+            name: my-test-file
+      restartPolicy: Never
+  backoffLimit: 0

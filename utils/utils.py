@@ -1,9 +1,16 @@
 import logging
+import sys
 import time
 import uuid
 
 import pulsar
 from _pulsar import ConsumerType, InitialPosition
+
+
+logging.root.setLevel(logging.INFO)
+handler = logging.StreamHandler(sys.stdout)
+handler.setLevel(logging.DEBUG)
+logging.root.addHandler(handler)
 
 
 class PulsarTestClient:

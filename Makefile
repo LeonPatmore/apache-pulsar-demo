@@ -10,3 +10,6 @@ start-k8:
 
 test-k8:
 	kubectl exec -it -n pulsar pulsar-mini-toolset-0 -- bin/pulsar-admin tenants list
+
+expose-locally:
+	minikube service pulsar-mini-proxy -n pulsar --url
