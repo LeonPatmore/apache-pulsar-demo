@@ -1,3 +1,5 @@
+defaultPulsarImageTag: 3.1.0
+
 volumes:
   persistence: false
 
@@ -23,5 +25,22 @@ broker:
     managedLedgerDefaultWriteQuorum: "1"
     managedLedgerDefaultAckQuorum: "1"
 
+initialize: true
+
+images:
+  pulsar_manager:
+    tag: v0.4.0
+
 proxy:
   replicaCount: 1
+
+kube-prometheus-stack:
+  enabled: false
+  prometheusOperator:
+    enabled: false
+  grafana:
+    enabled: false
+  alertmanager:
+    enabled: false
+  prometheus:
+    enabled: false

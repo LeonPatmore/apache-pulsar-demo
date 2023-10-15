@@ -7,6 +7,7 @@ name = "pypi"
 pulsar-client="*"
 pytest="*"
 pytest-xdist="*"
+requests-toolbelt="*"
 
 [requires]
 python_version = '3.11'

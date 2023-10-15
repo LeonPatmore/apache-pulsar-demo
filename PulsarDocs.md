@@ -168,3 +168,15 @@ Topic compaction is the process of removing older messages which share the same 
 Only applies to persistent topics.
 
 Triggered automatically when the backlog reaches a certain size, or can be triggered manually.
+
+## Admin API
+
+The admin API is a rest API exposed by the Pulsar broker. It allows you to manage all aspects of the cluster, including setting up Pulsar functions.
+
+### Examples
+
+`curl --location 'http://localhost:63491/admin/v2/tenants'`
+
+```json
+["public", "pulsar"]
+```

@@ -10,7 +10,7 @@ logging.root.setLevel(logging.INFO)
 
 @pytest.fixture(scope="session")
 def client(request):
-    client = pulsar.Client('pulsar://localhost:6650')
+    client = pulsar.Client('pulsar://localhost:55994')
     request.addfinalizer(lambda: client.close())
     return PulsarTestClient(client)
 
@@ -123,3 +123,7 @@ def test_negative_ack_and_no_ack_share_same_retry_count(client):
 
     dlq_consumer = client.generate_consumer(topic=consumer.topic() + "-" + consumer.subscription_name() + "-DLQ")
     assert 1 == client.number_of_messages_for_consumer(dlq_consumer)[0]
+
+
+def test_function(client):
+    client.generate_n_messages(1, "functionIn")
